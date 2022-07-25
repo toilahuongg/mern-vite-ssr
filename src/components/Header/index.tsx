@@ -22,6 +22,7 @@ const Header = () => {
       .to(
         q('.gs-2'),
         {
+          width: '100%',
           xPercent: '+=50',
           autoAlpha: 0,
         },
@@ -73,10 +74,10 @@ const Header = () => {
         </div>
       </div>
       <div className="gs-wrapper bg-black h-screen flex items-center justify-center overflow-hidden">
-        <div className="gs-1">
+        <div className="gs-1 flex-1">
           <img src="/me.jpg" alt="" />
         </div>
-        <div className="gs-2 items-center justify-center flex-1 w-full text-9xl text-left font-serif gap-10">
+        <div className="gs-2 items-center justify-center flex-1 text-9xl text-left font-serif gap-10">
           <div className=" text-white">I'M</div>
           <div className="">
             <div className="text-white">Fullstack</div>
