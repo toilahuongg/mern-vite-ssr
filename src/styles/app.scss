@@ -1,11 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400;0,500;1,400;1,500&family=Quicksand:wght@300;400;500;600&display=swap');@tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/fira_code.min.css');
 
-.section {
-  height: 100%;
-  width: 100%;
-  top: 0;
-  position: sticky;
-  visibility: hidden;
+* {
+  padding: 0;
+  margin: 0;
+}
+
+@layer base {
+  :root {
+    --color-primary: 199 120 221;
+    --color-gray: 171 178 191;
+    --color-background: 40 44 51;
+    --color-white: 255 255 255;
+    font-family: 'Fira Code';
+  }
+}
+
+.header {
+  z-index: 888;
+  &-social {
+    left: 17px;
+    top: 0;
+    z-index: 999;
+    &__line {
+      width: 1px;
+      height: 191px;
+    }
+    &__icon {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}
+body {
+  background: rgb(var(--color-background))
 }
