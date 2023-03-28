@@ -23,6 +23,7 @@ module.exports = {
       gray: 'rgb(var(--color-gray))',
       background: 'rgb(var(--color-background) / <alpha-value>)',
       white: 'rgb(var(--color-white) / <alpha-value>)',
+      transparent: 'transparent',
     },
   },
   plugins: [],
