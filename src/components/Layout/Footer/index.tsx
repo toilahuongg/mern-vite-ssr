@@ -2,7 +2,7 @@ import ListSocial from '../Socials';
 
 const Footer = () => {
   return (
-    <div className="border-t-solid-gray">
+    <div className="border-t-solid-gray mt-12">
       <div className="container mx-auto my-8">
         <div className="flex justify-between">
           <div>
