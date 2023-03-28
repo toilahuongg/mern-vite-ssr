@@ -1,6 +1,7 @@
 import Button from '@src/components/Layout/Button';
 import Container from '@src/components/Layout/Container';
 import Heading from '@src/components/Layout/Heading';
+import TextField from '@src/components/Layout/TextField';
 import ListProject from '@src/components/Project/List';
 import Skills from '@src/components/Skills';
 import { Link } from 'react-router-dom';
@@ -79,7 +80,7 @@ const HomePage = () => {
       </Container>
       <Container>
         <div className="grid grid-cols-12 mb-12 gap-12">
-          <div className="col-span-5">
+          <div className="col-span-7">
             <Heading title="about-me" />
             <div className="mt-8 leading-relaxed text-gray">
               Hello, i’m Elias! I’m a self-taught front-end developer based in Kyiv, Ukraine. I can develop responsive
@@ -91,33 +92,27 @@ const HomePage = () => {
               <Button>{'Read more ->'}</Button>
             </div>
           </div>
-          <div className="col-span-7">
-            <div className="mt-24">
-              <Skills />
-            </div>
+          <div className="col-span-5 flex justify-center">
+            <img src="/assets/images/Image.png" />
           </div>
         </div>
       </Container>
       <Container>
-        <div className="grid grid-cols-12 mb-12 gap-12">
-          <div className="col-span-5">
-            <Heading title="contacts" />
-            <div className="mt-8 leading-relaxed text-gray">
-              Hello, i’m Elias! I’m a self-taught front-end developer based in Kyiv, Ukraine. I can develop responsive
-              websites from scratch and raise them into modern user-friendly web experiences. Transforming my creativity
-              and knowledge into a websites has been my passion for over a year. I have been helping various clients to
-              establish their presence online. I always strive to learn about the newest technologies and frameworks.
-            </div>
-            <div className="mt-8">
-              <Button>{'Read more ->'}</Button>
-            </div>
+        <div className="max-w-2xl mx-auto mb-14">
+          <Heading title="contacts" variant="center" />
+        </div>
+        <div className="max-w-5xl mx-auto flex flex-col gap-4">
+          <div className="grid grid-cols-2 gap-4">
+            <TextField as="input" label="Name" />
+            <TextField as="input" label="Email" />
           </div>
-          <div className="col-span-7">
-            <div className="mt-24">
-              <Skills />
-            </div>
+          <TextField as="input" label="Title" />
+          <TextField as="textarea" label="Message" rows={4} />
+          <div>
+            <Button>Send</Button>
           </div>
         </div>
+        <div className="h-4" />
       </Container>
     </>
   );
