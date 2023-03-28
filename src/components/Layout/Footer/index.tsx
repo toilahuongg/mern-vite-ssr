@@ -1,9 +1,8 @@
-import Button from '../Button';
 import ListSocial from '../Socials';
 
 const Footer = () => {
   return (
-    <div className="border-gray border-t border-solid">
+    <div className="border-t-solid-gray">
       <div className="container mx-auto my-8">
         <div className="flex justify-between">
           <div>
@@ -17,7 +16,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="mt-8 text-gray text-center"> © Copyright 2022. Made by Hugon </div>
+        <div className="mt-8 text-gray text-center"> © Copyright 2023. Made by Hugon </div>
       </div>
     </div>
   );

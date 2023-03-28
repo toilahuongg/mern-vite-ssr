@@ -5,7 +5,7 @@ const ListSocial = () => {
   return (
     <>
       {LIST_SOCIAL.map(({ id, Icon, link }) => (
-        <div key={id} className="header-social__icon flex justify-center items-center">
+        <div key={id} className="header-social__icon flex-center">
           <Link to={link}>
             <Icon className="fill-gray hover:fill-white cursor-pointer" />
           </Link>

@@ -6,9 +6,8 @@ type TProps = {
 } & React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
 const Button: React.FC<TProps> = ({ variant = 'primary', children, ...props }) => {
   const className = useMemo(() => {
-    if (variant === 'primary')
-      return 'py-2 px-4 cursor-pointer border-primary border border-solid text-white hover:bg-primary/20 hover:font-medium';
-    return 'py-2 px-4 cursor-pointer border-gray border border-solid text-gray hover:bg-gray/20 hover:font-medium';
+    if (variant === 'primary') return 'btn-primary';
+    return 'btn-secondary';
   }, [variant]);
   return (
     <button className={className} {...props}>

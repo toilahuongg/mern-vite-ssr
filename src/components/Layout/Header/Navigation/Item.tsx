@@ -7,10 +7,7 @@ type TProps = {
 const NavItem: React.FC<TProps> = ({ item: { url, urlMatch, label } }) => {
   const match = useMatch(urlMatch);
   return (
-    <li
-      data-active={match}
-      className="text-gray cursor-pointer hover:text-white data-[active=true]:text-white data-[active=true]:font-medium"
-    >
+    <li data-active={match} className="nav-item">
       <Link to={url}>
         <span className="text-primary">#</span>
         {label}
