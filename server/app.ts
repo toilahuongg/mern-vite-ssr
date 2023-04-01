@@ -4,6 +4,8 @@ import * as path from 'path';
 import { ViteDevServer, createServer as createViteServer } from 'vite';
 import { installGlobals } from '@remix-run/node';
 import compression from 'compression';
+import helmet from 'helmet';
+import morgan from 'morgan';
 
 installGlobals();
 
@@ -17,6 +19,8 @@ function resolve(p: string) {
 const createServer = async () => {
   const app = express();
   let vite: ViteDevServer;
+
+  // middlewares
   if (!isProduction) {
     vite = await createViteServer({
       root,
@@ -26,9 +30,16 @@ const createServer = async () => {
 
     app.use(vite.middlewares);
   } else {
+    app.use(morgan('dev'));
+    app.use(helmet());
     app.use(compression());
     app.use(express.static(resolve('dist/client')));
   }
+
+  // init db
+
+  import('./dbs/init.mongodb');
+  // routes
   app.use('*', async (req, res) => {
     const url = req.originalUrl;
 

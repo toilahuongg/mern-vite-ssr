@@ -1,11 +1,8 @@
 import createServer from './app';
-import * as dotenv from 'dotenv';
+import appConfig from './configs/app.config';
 
-dotenv.config();
-
-const PORT = process.env.PORT || 3001;
 createServer().then((app) => {
-  app.listen(PORT, () => {
-    console.log(`Server is started: http://localhost:${PORT}`);
+  app.listen(appConfig.app.port, () => {
+    console.log(`Server is started: http://localhost:${appConfig.app.port}`);
   });
 });
