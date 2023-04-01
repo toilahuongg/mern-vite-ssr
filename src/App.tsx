@@ -1,9 +1,9 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { RouteObject } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
 import HomePage from './routes/Home';
 import Root from './routes/Root';
 
-const router = createBrowserRouter([
+export const routes: RouteObject[] = [
   {
     path: '/',
     element: <Root />,
@@ -15,14 +15,4 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
-
-function App() {
-  return (
-    <>
-      <RouterProvider router={router} />
-    </>
-  );
-}
-
-export default App;
+];
