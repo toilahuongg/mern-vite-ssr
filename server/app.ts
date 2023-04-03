@@ -1,11 +1,13 @@
 import * as express from 'express';
 import * as fsp from 'fs/promises';
 import * as path from 'path';
+import * as compression from 'compression';
+import helmet from 'helmet';
+import * as morgan from 'morgan';
 import { ViteDevServer, createServer as createViteServer } from 'vite';
 import { installGlobals } from '@remix-run/node';
-import compression from 'compression';
-import helmet from 'helmet';
-import morgan from 'morgan';
+
+import rootRouter from './routes';
 
 installGlobals();
 
@@ -29,17 +31,22 @@ const createServer = async () => {
     });
 
     app.use(vite.middlewares);
-  } else {
     app.use(morgan('dev'));
-    app.use(helmet());
-    app.use(compression());
+  } else {
+    app.use(morgan('tiny'));
+
     app.use(express.static(resolve('dist/client')));
   }
-
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(helmet());
+  app.use(compression());
   // init db
 
   import('./dbs/init.mongodb');
   // routes
+  app.use(rootRouter);
+
   app.use('*', async (req, res) => {
     const url = req.originalUrl;
 
@@ -75,6 +82,7 @@ const createServer = async () => {
       res.status(500).end((error as Error).stack);
     }
   });
+
   return app;
 };
 

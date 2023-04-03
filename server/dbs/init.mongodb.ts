@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import appConfig from '../configs/app.config';
+import appConfig from '@server/configs/app.config';
 
 const {
   db: { host, name, pass, port, user },
