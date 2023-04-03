@@ -1,4 +1,4 @@
-import { TErrorResponse } from '@server/schema/response.schema';
+import { TInputError } from '@server/schema/response.schema';
 
 const StatusCode = {
   BAD: 400,
@@ -16,21 +16,21 @@ const ReasonStatusCode = {
   INTERNAL_SERVER: 'Internal server error',
 };
 export default class ErrorResponse extends Error {
-  protected status: number;
-  constructor({ message = ReasonStatusCode.INTERNAL_SERVER, status = StatusCode.INTERNAL_SERVER }: TErrorResponse) {
+  protected statusCode: number;
+  constructor({ message = ReasonStatusCode.INTERNAL_SERVER, statusCode = StatusCode.INTERNAL_SERVER }: TInputError) {
     super(message);
-    this.status = status;
+    this.statusCode = statusCode;
   }
 }
 
 export class BadRequest extends ErrorResponse {
   constructor(message = ReasonStatusCode.BAD) {
-    super({ message, status: StatusCode.BAD });
+    super({ message, statusCode: StatusCode.BAD });
   }
 }
 
 export class ConflictErrorRequest extends ErrorResponse {
   constructor(message = ReasonStatusCode.CONFLICT) {
-    super({ message, status: StatusCode.CONFLICT });
+    super({ message, statusCode: StatusCode.CONFLICT });
   }
 }

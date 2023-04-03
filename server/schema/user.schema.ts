@@ -1,6 +1,8 @@
+import { Types } from 'mongoose';
 import { object, z } from 'zod';
 
 export const userSchema = object({
+  _id: z.instanceof(Types.ObjectId).optional(),
   username: z.string(),
   password: z.string(),
   firstName: z.string().optional(),
