@@ -1,3 +1,3 @@
 use('portfolio');
 
-db.Users.drop();
+db.Keys.find();

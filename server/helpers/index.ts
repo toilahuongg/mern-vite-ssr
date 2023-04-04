@@ -1,5 +1,5 @@
 import { pick } from 'lodash';
-export const getInfoData = (obj: object, paths: string[]) => pick(obj, paths);
+export const getInfoData = <T>(obj: T, paths: (keyof T)[]) => pick(obj, paths);
 export const makeid = (length: number) => {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

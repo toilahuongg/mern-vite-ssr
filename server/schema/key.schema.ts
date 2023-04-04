@@ -1,11 +1,32 @@
 import { Types } from 'mongoose';
-import { object, z } from 'zod';
+import { z } from 'zod';
 
-export const keySchema = object({
+export const deviceSchema = z.object({
+  _id: z.instanceof(Types.ObjectId).optional(),
+  browser: z.string(),
+  os: z.string(),
+  ipAddress: z.string(),
+  hash: z.string(),
+  refreshToken: z.string(),
+});
+
+export const keySchema = z.object({
   _id: z.instanceof(Types.ObjectId).optional(),
   user: z.instanceof(Types.ObjectId),
   publicKey: z.string(),
-  refreshToken: z.array(z.string()),
+  privateKey: z.string(),
+  devices: z.array(deviceSchema),
+  refreshTokensUsed: z.array(z.string()),
 });
 
+export const updateRefreshTokenSchema = z.object({
+  user: z.instanceof(Types.ObjectId),
+  publicKey: z.string(),
+  privateKey: z.string(),
+  oldRefreshToken: z.string().optional(),
+  newDevice: deviceSchema,
+});
+
+export type TDevice = z.infer<typeof deviceSchema>;
 export type TKey = z.infer<typeof keySchema>;
+export type TUpdateRefreshToken = z.infer<typeof updateRefreshTokenSchema>;

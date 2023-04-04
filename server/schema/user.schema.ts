@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
-import { object, z } from 'zod';
+import { z } from 'zod';
 
-export const userSchema = object({
+export const userSchema = z.object({
   _id: z.instanceof(Types.ObjectId).optional(),
   username: z.string(),
   password: z.string(),

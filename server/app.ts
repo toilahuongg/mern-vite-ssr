@@ -45,7 +45,7 @@ const createServer = async () => {
 
   import('./dbs/init.mongodb');
   // routes
-  app.use(rootRouter);
+  app.use('/api/v1', rootRouter);
 
   app.use('*', async (req, res) => {
     const url = req.originalUrl;

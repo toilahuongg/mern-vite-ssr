@@ -4,10 +4,16 @@ dotenv.config();
 
 const isProd = process.env.NODE_ENV === 'production';
 
+const COMMON_APP = {
+  isProd,
+  secretKey: process.env.SECRET_KEY || 'toilahuong',
+  maxLengthRefreshToken: process.env.MAX_REFRESH_TOKEN || 10,
+};
+
 const DEV = {
   app: {
     port: process.env.DEV_APP_PORT || 3006,
-    isProd,
+    ...COMMON_APP,
   },
   db: {
     host: process.env.DEV_DB_HOST || 'localhost',
@@ -21,7 +27,7 @@ const DEV = {
 const PROD = {
   app: {
     port: process.env.PROD_APP_PORT || 3006,
-    isProd,
+    ...COMMON_APP,
   },
   db: {
     host: process.env.PROD_DB_HOST || 'localhost',

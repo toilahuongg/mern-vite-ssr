@@ -1,15 +1,17 @@
 import * as bcrypt from 'bcrypt';
 import UserModel from '@server/models/user.model';
-import { TUser } from '@server/schema/user.schema';
-import ErrorResponse, { ConflictErrorRequest } from '@server/core/error.response';
+import ErrorResponse, { AuthFailureError, ConflictErrorRequest } from '@server/core/error.response';
 import { generateKey } from '@server/helpers/generateKey';
 import { createTokenPair } from '@server/auth/authUtils';
 import KeyService from './key.service';
 import { getInfoData } from '@server/helpers';
+import { z } from 'zod';
+import { loginValidator, signUpValidator } from '@server/validators/access.validator';
+import { TDevice } from '@server/schema/key.schema';
 
 class AccessService {
-  static async signUp(body: TUser) {
-    const { username, email, password, firstName, address, lastName, phoneNumber } = body;
+  static async signUp(body: z.infer<typeof signUpValidator.shape.body>, device: TDevice) {
+    const { username, email, password } = body;
     const holderUser = await UserModel.findOne({
       $or: [
         {
@@ -28,22 +30,68 @@ class AccessService {
       username,
       email,
       password: passwordHash,
-      firstName,
-      address,
-      lastName,
-      phoneNumber,
     });
     if (!newUser) throw new ErrorResponse({});
     const { publicKey, privateKey } = await generateKey();
 
+    const tokens = await createTokenPair({ _id: newUser._id, username: newUser.username }, privateKey);
+
+    device.refreshToken = tokens.refreshToken;
     await KeyService.createKeyToken({
       user: newUser._id,
       publicKey,
-      refreshToken: [],
+      privateKey,
+      devices: [device],
+      refreshTokensUsed: [],
     });
-    const tokens = await createTokenPair({ _id: newUser._id, username: newUser.username }, publicKey, privateKey);
     return {
       user: getInfoData(newUser, ['_id', 'username', 'email']),
+      tokens,
+    };
+  }
+
+  /*
+    1. Check username or email
+    2. Match password
+    3. Get publicKey, privateKey in KeyModel
+    4. if not exists key, create new publicKey and privateKey
+    5. Create new accessToken and refreshToken
+    6. Add new refreshToken to KeyModel
+    7. Result
+  */
+  static async login(body: z.infer<typeof loginValidator.shape.body>, device: TDevice) {
+    const { account, password } = body;
+
+    const foundUser = await UserModel.findOne({
+      $or: [
+        {
+          username: account,
+        },
+        { email: account },
+      ],
+    }).lean();
+    if (!foundUser) throw new AuthFailureError('Incorrect username, email or password!');
+
+    const match = await bcrypt.compare(password, foundUser.password);
+    if (!match) throw new AuthFailureError('Incorrect username, email or password!');
+
+    let keyPair = await KeyService.getKeyPair(foundUser._id);
+    if (!keyPair) keyPair = await generateKey();
+
+    const { publicKey, privateKey } = keyPair;
+
+    const tokens = await createTokenPair({ _id: foundUser._id, username: foundUser.username }, privateKey);
+    device.refreshToken = tokens.refreshToken;
+
+    await KeyService.updateRefreshToken({
+      user: foundUser._id,
+      publicKey,
+      privateKey,
+      newDevice: device,
+    });
+
+    return {
+      user: getInfoData(foundUser, ['_id', 'username', 'email', 'firstName', 'lastName', 'phoneNumber']),
       tokens,
     };
   }

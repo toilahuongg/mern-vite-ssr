@@ -1,41 +1,41 @@
 import * as JWT from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
+import appConfig from '@server/configs/app.config';
 
 dotenv.config();
 
+export const generateToken = (payload: string | Buffer | object, privateKey: string) => {
+  return JWT.sign(
+    payload,
+    {
+      key: privateKey,
+      passphrase: appConfig.app.secretKey,
+    },
+    { algorithm: 'RS256', expiresIn: '2 days' },
+  );
+};
+
 export const createTokenPair = (
-  payload: any,
-  publicKey: string,
+  payload: string | Buffer | object,
   privateKey: string,
 ): Promise<{ accessToken: string; refreshToken: string }> =>
   new Promise(async (resolve, reject) => {
     try {
-      const accessToken = JWT.sign(
-        payload,
-        {
-          key: privateKey,
-          passphrase: process.env.SECRET_KEY!,
-        },
-        { algorithm: 'RS256', expiresIn: '2 days' },
-      );
-      const refreshToken = JWT.sign(
-        payload,
-        {
-          key: privateKey,
-          passphrase: process.env.SECRET_KEY!,
-        },
-        { algorithm: 'RS256', expiresIn: '7 days' },
-      );
-
-      JWT.verify(accessToken, publicKey, (err, decode) => {
-        if (err) {
-          console.error(`error:: ${err}`);
-        } else {
-          console.log('decode:', decode);
-        }
-      });
+      const accessToken = generateToken(payload, privateKey);
+      const refreshToken = generateToken(payload, privateKey);
       resolve({ accessToken, refreshToken });
     } catch (error) {
       reject(error);
     }
+  });
+
+export const verifyToken = (token: string, publicKey: string) =>
+  new Promise((resolve, reject) => {
+    JWT.verify(token, publicKey, (err, decode) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(decode);
+      }
+    });
   });

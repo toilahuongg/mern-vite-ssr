@@ -1,22 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TInputSuccess } from '@server/schema/response.schema';
+import { ReasonPhrases, StatusCodes } from '@server/utils/httpStatusCode';
 import { Response } from 'express';
-
-const StatusCode = {
-  OK: 200,
-  CREATED: 201,
-};
-
-const ReasonStatusCode = {
-  OK: 'Success',
-  CREATED: 'Created',
-};
 
 export class SuccessResponse<T> {
   protected message: string;
   protected statusCode: number;
   protected metadata: T;
-  constructor({ message = ReasonStatusCode.OK, statusCode = StatusCode.OK, metadata }: TInputSuccess<T>) {
+  constructor({ message = ReasonPhrases.OK, statusCode = StatusCodes.OK, metadata }: TInputSuccess<T>) {
     this.message = message;
     this.statusCode = statusCode;
     this.metadata = metadata;
@@ -39,7 +30,7 @@ export class OK<T> extends SuccessResponse<T> {
 }
 
 export class CREATED<T> extends SuccessResponse<T> {
-  constructor({ message = ReasonStatusCode.CREATED, statusCode = StatusCode.CREATED, metadata }: TInputSuccess<T>) {
+  constructor({ message = ReasonPhrases.CREATED, statusCode = StatusCodes.CREATED, metadata }: TInputSuccess<T>) {
     super({ message, statusCode, metadata });
   }
 }

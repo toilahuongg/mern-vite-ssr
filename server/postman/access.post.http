@@ -9,3 +9,12 @@ Content-Type: application/json
   "password": "123456",
   "confirmPassword": "123456"
 }
+
+### login
+POST {{url_dev}}/user/login
+Content-Type: application/json
+
+{
+  "account": "toilahuong",
+  "password": "1234567"
+}

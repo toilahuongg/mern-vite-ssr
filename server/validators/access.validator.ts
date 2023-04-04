@@ -19,3 +19,13 @@ export const signUpValidator = z.object({
       message: "Passwords don't match",
     }),
 });
+
+export const loginValidator = z.object({
+  body: z.object({
+    account: z.string({
+      required_error: 'Username or email is required',
+      invalid_type_error: 'Username or email must be a string',
+    }),
+    password: z.string({ required_error: 'Password is required' }),
+  }),
+});

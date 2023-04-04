@@ -1,3 +1,4 @@
+import appConfig from '@server/configs/app.config';
 import * as crypto from 'crypto';
 import * as dotenv from 'dotenv';
 
@@ -17,7 +18,7 @@ export const generateKey = (): Promise<{ publicKey: string; privateKey: string }
           type: 'pkcs8',
           format: 'pem',
           cipher: 'aes-256-cbc',
-          passphrase: process.env.SECRET_KEY!,
+          passphrase: appConfig.app.secretKey,
         },
       },
       (err, publicKey, privateKey) => {

@@ -1,11 +1,18 @@
 import fetch from 'node-fetch';
 import appConfig from '../../configs/app.config';
 import { z } from 'zod';
-import { signUpValidator } from '../../validators/access.validator';
+import { loginValidator, signUpValidator } from '../../validators/access.validator';
 import { makeid } from '../../helpers';
 
 const PORT = appConfig.app.port;
 const uri = `http://localhost:${PORT}/api/v1`;
+const randomId = makeid(10);
+
+const badResponse = (message: string) => ({
+  status: 'error',
+  statusCode: 400,
+  message: message,
+});
 
 describe('signUpUser', () => {
   const bodySchema = signUpValidator.shape.body;
@@ -17,11 +24,6 @@ describe('signUpUser', () => {
         'Content-Type': 'application/json',
       },
     }).then((res) => res.json());
-  const badResponse = (message: string) => ({
-    status: 'error',
-    statusCode: 400,
-    message: message,
-  });
 
   it('should return message when the username is not provided', async () => {
     const result = await request({});
@@ -93,7 +95,6 @@ describe('signUpUser', () => {
     expect(result).toEqual(badResponse("Passwords don't match"));
   });
 
-  const randomId = makeid(10);
   it('should return message when registered success', async () => {
     const result = await request({
       username: randomId,
@@ -101,6 +102,7 @@ describe('signUpUser', () => {
       password: '123456',
       confirmPassword: '123456',
     });
+    console.log(result);
     expect(result.statusCode).toBe(201);
   });
 
@@ -112,5 +114,45 @@ describe('signUpUser', () => {
       confirmPassword: '123456',
     });
     expect(result.statusCode).toBe(409);
+  });
+});
+
+describe('loginUser', () => {
+  const bodySchema = loginValidator.shape.body;
+  const request = (body: Partial<z.infer<typeof bodySchema>>) =>
+    fetch(`${uri}/user/login`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((res) => res.json());
+
+  it('should return message when the account is not provided', async () => {
+    const result = await request({});
+    expect(result).toEqual(badResponse('Username or email is required'));
+  });
+
+  it('should return message when the password is not provided', async () => {
+    const result = await request({
+      account: randomId,
+    });
+    expect(result).toEqual(badResponse('Password is required'));
+  });
+
+  it('should return message when account or password incorrect', async () => {
+    const result = await request({
+      account: randomId,
+      password: '1234567',
+    });
+    expect(result.statusCode).toBe(401);
+  });
+
+  it('should return message when account or password incorrect', async () => {
+    const result = await request({
+      account: randomId,
+      password: '123456',
+    });
+    expect(result.statusCode).toBe(200);
   });
 });
