@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { loginValidator, signUpValidator } from '@server/validators/access.validator';
 import { TDevice } from '@server/schema/key.schema';
 import { TUserEncrypt } from '@server/schema/user.schema';
+import { Types } from 'mongoose';
 
 class AccessService {
   static async signUp(body: z.infer<typeof signUpValidator.shape.body>, device: TDevice) {
@@ -105,9 +106,8 @@ class AccessService {
     };
   }
 
-  static async logout(device: TDevice) {
-    console.log(device);
-    return {};
+  static async logout(userId: Types.ObjectId, deviceId: Types.ObjectId) {
+    return KeyService.removeDevice(userId, deviceId);
   }
 }
 

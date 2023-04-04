@@ -18,10 +18,12 @@ router.post(
 
 router.post('/user/login', detechDevice, asyncHandler(validate(loginValidator)), asyncHandler(accessController.login));
 
+router.use(authentication);
 if (!appConfig.app.isProd) {
-  router.get('/user/check-auth', authentication, (req, res) => {
+  router.get('/user/check-auth', (req, res) => {
     return res.json(req.userId);
   });
 }
 
+router.post('/user/logout', asyncHandler(accessController.logout));
 export default router;
