@@ -17,10 +17,6 @@ const deviceSchema = new Schema<TDevice>({
     type: String,
     required: true,
   },
-  hash: {
-    type: String,
-    required: true,
-  },
   refreshToken: {
     type: String,
     required: true,

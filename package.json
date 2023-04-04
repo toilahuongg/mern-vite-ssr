@@ -30,7 +30,6 @@
     "morgan": "^1.10.0",
     "nanoid": "^4.0.2",
     "node-fetch": "^2.6.1",
-    "object-hash": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.9.0",

@@ -41,7 +41,7 @@ class AccessService {
     );
 
     device.refreshToken = tokens.refreshToken;
-    await KeyService.createKeyToken({
+    const newDevice = await KeyService.createKeyToken({
       user: newUser._id,
       publicKey,
       privateKey,
@@ -51,6 +51,7 @@ class AccessService {
     return {
       user: getInfoData(newUser, ['_id', 'username', 'email']),
       tokens,
+      deviceId: newDevice._id,
     };
   }
 
@@ -90,7 +91,7 @@ class AccessService {
     );
     device.refreshToken = tokens.refreshToken;
 
-    await KeyService.updateRefreshToken({
+    const newDevice = await KeyService.updateRefreshToken({
       user: foundUser._id,
       publicKey,
       privateKey,
@@ -100,7 +101,13 @@ class AccessService {
     return {
       user: getInfoData(foundUser, ['_id', 'username', 'email', 'firstName', 'lastName', 'phoneNumber']),
       tokens,
+      deviceId: newDevice._id,
     };
+  }
+
+  static async logout(device: TDevice) {
+    console.log(device);
+    return {};
   }
 }
 

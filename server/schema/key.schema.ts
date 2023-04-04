@@ -6,7 +6,6 @@ export const deviceSchema = z.object({
   browser: z.string(),
   os: z.string(),
   ipAddress: z.string(),
-  hash: z.string(),
   refreshToken: z.string(),
 });
 
@@ -23,7 +22,6 @@ export const updateRefreshTokenSchema = z.object({
   user: z.instanceof(Types.ObjectId),
   publicKey: z.string(),
   privateKey: z.string(),
-  oldRefreshToken: z.string().optional(),
   newDevice: deviceSchema,
 });
 
