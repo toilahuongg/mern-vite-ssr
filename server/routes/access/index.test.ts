@@ -7,7 +7,7 @@ import { makeid } from '../../helpers';
 const PORT = appConfig.app.port;
 const uri = `http://localhost:${PORT}/api/v1`;
 const randomId = makeid(10);
-
+let userId, accessToken;
 const badResponse = (message: string) => ({
   status: 'error',
   statusCode: 400,
@@ -153,6 +153,8 @@ describe('loginUser', () => {
       account: randomId,
       password: '123456',
     });
+    userId = result.metadata.user._id;
+    accessToken = result.metadata.tokens.accessToken;
     expect(result.statusCode).toBe(200);
   });
 });

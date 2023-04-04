@@ -18,14 +18,20 @@ export class BadRequest extends ErrorResponse {
   }
 }
 
-export class ConflictErrorRequest extends ErrorResponse {
+export class ConflictError extends ErrorResponse {
   constructor(message = ReasonPhrases.CONFLICT) {
     super({ message, statusCode: StatusCodes.CONFLICT });
   }
 }
-export class ForbiddenErrorRequest extends ErrorResponse {
+export class ForbiddenError extends ErrorResponse {
   constructor(message = ReasonPhrases.FORBIDDEN) {
     super({ message, statusCode: StatusCodes.FORBIDDEN });
+  }
+}
+
+export class NotFoundError extends ErrorResponse {
+  constructor(message = ReasonPhrases.NOT_FOUND) {
+    super({ message, statusCode: StatusCodes.NOT_FOUND });
   }
 }
 

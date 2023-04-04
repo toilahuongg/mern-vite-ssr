@@ -1,13 +1,14 @@
 import * as bcrypt from 'bcrypt';
 import UserModel from '@server/models/user.model';
-import ErrorResponse, { AuthFailureError, ConflictErrorRequest } from '@server/core/error.response';
+import ErrorResponse, { AuthFailureError, ConflictError } from '@server/core/error.response';
 import { generateKey } from '@server/helpers/generateKey';
-import { createTokenPair } from '@server/auth/authUtils';
+import { createTokenPair } from '@server/utils/token';
 import KeyService from './key.service';
 import { getInfoData } from '@server/helpers';
 import { z } from 'zod';
 import { loginValidator, signUpValidator } from '@server/validators/access.validator';
 import { TDevice } from '@server/schema/key.schema';
+import { TUserEncrypt } from '@server/schema/user.schema';
 
 class AccessService {
   static async signUp(body: z.infer<typeof signUpValidator.shape.body>, device: TDevice) {
@@ -22,7 +23,7 @@ class AccessService {
     }).lean();
 
     if (holderUser) {
-      throw new ConflictErrorRequest('Username or email already registered!');
+      throw new ConflictError('Username or email already registered!');
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
@@ -34,7 +35,10 @@ class AccessService {
     if (!newUser) throw new ErrorResponse({});
     const { publicKey, privateKey } = await generateKey();
 
-    const tokens = await createTokenPair({ _id: newUser._id, username: newUser.username }, privateKey);
+    const tokens = await createTokenPair(
+      <TUserEncrypt>{ userId: newUser._id.toString(), username: newUser.username },
+      privateKey,
+    );
 
     device.refreshToken = tokens.refreshToken;
     await KeyService.createKeyToken({
@@ -80,7 +84,10 @@ class AccessService {
 
     const { publicKey, privateKey } = keyPair;
 
-    const tokens = await createTokenPair({ _id: foundUser._id, username: foundUser.username }, privateKey);
+    const tokens = await createTokenPair(
+      <TUserEncrypt>{ userId: foundUser._id.toString(), username: foundUser.username },
+      privateKey,
+    );
     device.refreshToken = tokens.refreshToken;
 
     await KeyService.updateRefreshToken({

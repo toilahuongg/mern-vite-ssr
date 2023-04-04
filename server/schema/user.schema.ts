@@ -12,4 +12,10 @@ export const userSchema = z.object({
   address: z.string().optional(),
 });
 
+export const userEncryptSchema = z.object({
+  userId: z.string(),
+  username: z.string(),
+});
+
+export type TUserEncrypt = z.infer<typeof userEncryptSchema>;
 export type TUser = z.infer<typeof userSchema>;
