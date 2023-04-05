@@ -4,14 +4,14 @@ import appConfig from '@server/configs/app.config';
 
 dotenv.config();
 
-export const generateToken = (payload: string | Buffer | object, privateKey: string) => {
+export const generateToken = (payload: string | Buffer | object, privateKey: string, expiresIn: string | number) => {
   return JWT.sign(
     payload,
     {
       key: privateKey,
       passphrase: appConfig.app.secretKey,
     },
-    { algorithm: 'RS256', expiresIn: '2 days' },
+    { algorithm: 'RS256', expiresIn },
   );
 };
 
@@ -21,8 +21,8 @@ export const createTokenPair = (
 ): Promise<{ accessToken: string; refreshToken: string }> =>
   new Promise(async (resolve, reject) => {
     try {
-      const accessToken = generateToken(payload, privateKey);
-      const refreshToken = generateToken(payload, privateKey);
+      const accessToken = generateToken(payload, privateKey, appConfig.app.tokenExpiresIn);
+      const refreshToken = generateToken(payload, privateKey, appConfig.app.refreshTokenExpiresIn);
       resolve({ accessToken, refreshToken });
     } catch (error) {
       reject(error);

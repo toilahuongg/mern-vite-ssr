@@ -49,8 +49,27 @@ export default class KeyService {
     return KeyModel.findOne({ user }, { _id: 0, publicKey: 1, privateKey: 1 }).lean();
   }
 
-  static getDevice(id: Types.ObjectId) {
-    return KeyModel.findOne({ 'devices._id': id }).lean();
+  static findByDeviceId(deviceId: Types.ObjectId) {
+    return KeyModel.findOne({ 'devices._id': deviceId }).lean();
+  }
+
+  static addToRefreshTokensUsed(_id: Types.ObjectId, refreshToken: string) {
+    return KeyModel.findOneAndUpdate(
+      { _id },
+      { $addToSet: { refreshTokensUsed: refreshToken }, $pull: { devices: { refreshToken: refreshToken } } },
+      { new: true },
+    ).lean();
+  }
+  static findByDeviceIdAndRefreshToken(deviceId: Types.ObjectId, refreshToken: string) {
+    return KeyModel.findOne({ 'devices._id': deviceId, 'devices.refreshToken': refreshToken }).lean();
+  }
+
+  static findInRefreshTokensUsed(refreshToken: string) {
+    return KeyModel.findOne({ refreshTokensUsed: refreshToken }).lean();
+  }
+
+  static removeAllRefreshToken(_id: Types.ObjectId) {
+    return KeyModel.findOneAndUpdate({ _id }, { devices: [] }, { new: true }).lean();
   }
 
   static async removeDevice(user: Types.ObjectId, id: Types.ObjectId): Promise<Types.ObjectId> {

@@ -12,15 +12,25 @@ class AccessController {
 
   static async login(req: Request, res: Response) {
     new OK({
-      message: 'Login successfully!',
+      message: 'Login success!',
       metadata: await AccessService.login(req.body, req.device!),
     }).send(res);
   }
 
   static async logout(req: Request, res: Response) {
     new OK({
-      message: 'Logout successfully!',
+      message: 'Logout success!',
       metadata: await AccessService.logout(req.userId!, req.deviceId!),
+    }).send(res);
+  }
+
+  static async refreshToken(req: Request, res: Response) {
+    new OK({
+      message: 'Get accessToken success!',
+      metadata: await AccessService.refreshToken({
+        refreshToken: req.refreshToken!,
+        deviceId: req.deviceId!,
+      }),
     }).send(res);
   }
 }

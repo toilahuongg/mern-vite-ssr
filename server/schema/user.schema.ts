@@ -17,5 +17,11 @@ export const userEncryptSchema = z.object({
   username: z.string(),
 });
 
+export const refreshTokenSchema = z.object({
+  deviceId: z.instanceof(Types.ObjectId),
+  refreshToken: z.string(),
+});
+
 export type TUserEncrypt = z.infer<typeof userEncryptSchema>;
 export type TUser = z.infer<typeof userSchema>;
+export type TRefreshTokenSchema = z.infer<typeof refreshTokenSchema>;

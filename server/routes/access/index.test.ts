@@ -17,7 +17,7 @@ const badResponse = (message: string) => ({
 describe('signUpUser', () => {
   const bodySchema = signUpValidator.shape.body;
   const request = (body: Partial<z.infer<typeof bodySchema>>) =>
-    fetch(`${uri}/user/signup`, {
+    fetch(`${uri}/auth/signup`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
@@ -120,7 +120,7 @@ describe('signUpUser', () => {
 describe('loginUser', () => {
   const bodySchema = loginValidator.shape.body;
   const request = (body: Partial<z.infer<typeof bodySchema>>) =>
-    fetch(`${uri}/user/login`, {
+    fetch(`${uri}/auth/login`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {

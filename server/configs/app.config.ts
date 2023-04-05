@@ -8,6 +8,8 @@ const COMMON_APP = {
   isProd,
   secretKey: process.env.SECRET_KEY || 'toilahuong',
   maxLengthRefreshToken: process.env.MAX_REFRESH_TOKEN || 10,
+  tokenExpiresIn: process.env.TOKEN_EXPIRESIN || '1h',
+  refreshTokenExpiresIn: process.env.TOKEN_EXPIRESIN || '7d',
 };
 
 const DEV = {

@@ -2,14 +2,16 @@ import * as bcrypt from 'bcrypt';
 import UserModel from '@server/models/user.model';
 import ErrorResponse, { AuthFailureError, ConflictError } from '@server/core/error.response';
 import { generateKey } from '@server/helpers/generateKey';
-import { createTokenPair } from '@server/utils/token';
+import { createTokenPair, generateToken, verifyToken } from '@server/utils/token';
 import KeyService from './key.service';
 import { getInfoData } from '@server/helpers';
 import { z } from 'zod';
 import { loginValidator, signUpValidator } from '@server/validators/access.validator';
 import { TDevice } from '@server/schema/key.schema';
-import { TUserEncrypt } from '@server/schema/user.schema';
+import { TRefreshTokenSchema, TUserEncrypt } from '@server/schema/user.schema';
 import { Types } from 'mongoose';
+import { ForbiddenError } from '@server/core/error.response';
+import appConfig from '@server/configs/app.config';
 
 class AccessService {
   static async signUp(body: z.infer<typeof signUpValidator.shape.body>, device: TDevice) {
@@ -108,6 +110,31 @@ class AccessService {
 
   static async logout(userId: Types.ObjectId, deviceId: Types.ObjectId) {
     return KeyService.removeDevice(userId, deviceId);
+  }
+  static async refreshToken({ refreshToken, deviceId }: TRefreshTokenSchema) {
+    const foundRefreshTokensUsed = await KeyService.findInRefreshTokensUsed(refreshToken);
+    if (foundRefreshTokensUsed) {
+      await KeyService.removeAllRefreshToken(foundRefreshTokensUsed._id);
+      throw new ForbiddenError('Something went wrong! Please relogin');
+    }
+
+    const foundKey = await KeyService.findByDeviceIdAndRefreshToken(deviceId, refreshToken);
+    if (!foundKey) throw new AuthFailureError('Invalid RefreshToken');
+
+    let decoded: TUserEncrypt;
+    try {
+      decoded = (await verifyToken(refreshToken, foundKey.publicKey)) as TUserEncrypt;
+    } catch (error) {
+      console.log('Decoded refreshToken::', error);
+      await KeyService.addToRefreshTokensUsed(foundKey._id, refreshToken);
+      throw new AuthFailureError('Invalid RefreshToken!');
+    }
+
+    const { userId, username } = decoded;
+    const accessToken = generateToken({ userId, username }, foundKey.privateKey, appConfig.app.tokenExpiresIn);
+    return {
+      accessToken,
+    };
   }
 }
 

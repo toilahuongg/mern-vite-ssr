@@ -7,6 +7,7 @@ declare global {
       userId?: Types.ObjectId | undefined;
       device?: TDevice | undefined;
       deviceId?: Types.ObjectId | undefined;
+      refreshToken?: string | undefined;
     }
   }
 }
