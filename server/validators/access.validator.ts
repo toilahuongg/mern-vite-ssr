@@ -30,7 +30,7 @@ export const loginValidator = z.object({
   }),
 });
 
-export const changePasswordUpValidator = z.object({
+export const changePasswordValidator = z.object({
   body: z
     .object({
       oldPassword: z.string({
@@ -45,4 +45,29 @@ export const changePasswordUpValidator = z.object({
     .refine(({ newPassword, confirmPassword }) => newPassword === confirmPassword, {
       message: "Passwords don't match",
     }),
+});
+
+export const changeInformationValidator = z.object({
+  body: z.object({
+    firstName: z
+      .string({
+        invalid_type_error: 'First name must be a string',
+      })
+      .optional(),
+    lastName: z
+      .string({
+        invalid_type_error: 'Last name must be a string',
+      })
+      .optional(),
+    phoneNumber: z
+      .string({
+        invalid_type_error: 'Phone number must be a string',
+      })
+      .optional(),
+    address: z
+      .string({
+        invalid_type_error: 'Address must be a string',
+      })
+      .optional(),
+  }),
 });

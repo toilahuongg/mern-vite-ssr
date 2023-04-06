@@ -40,6 +40,13 @@ class AccessController {
       metadata: await AccessService.changePassword(req.userId!, req.body),
     }).send(res);
   }
+
+  static async changeInformation(req: Request, res: Response) {
+    new OK({
+      message: 'Change information success!',
+      metadata: await AccessService.changeInformation(req.userId!, req.body),
+    }).send(res);
+  }
 }
 
 export default AccessController;

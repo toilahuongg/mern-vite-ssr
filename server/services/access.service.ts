@@ -6,7 +6,12 @@ import { createTokenPair, generateToken, verifyToken } from '@server/utils/token
 import KeyService from './key.service';
 import { getInfoData } from '@server/helpers';
 import { z } from 'zod';
-import { changePasswordUpValidator, loginValidator, signUpValidator } from '@server/validators/access.validator';
+import {
+  changeInformationValidator,
+  changePasswordValidator,
+  loginValidator,
+  signUpValidator,
+} from '@server/validators/access.validator';
 import { TDevice } from '@server/schema/key.schema';
 import { TRefreshTokenSchema, TUserEncrypt } from '@server/schema/user.schema';
 import { Types } from 'mongoose';
@@ -102,7 +107,7 @@ class AccessService {
     });
 
     return {
-      user: getInfoData(foundUser, ['_id', 'username', 'email', 'firstName', 'lastName', 'phoneNumber']),
+      user: getInfoData(foundUser, ['_id', 'username', 'email', 'firstName', 'lastName', 'phoneNumber', 'phoneNumber']),
       tokens,
       deviceId: newDevice._id,
     };
@@ -137,7 +142,7 @@ class AccessService {
     };
   }
 
-  static async changePassword(userId: Types.ObjectId, body: z.infer<typeof changePasswordUpValidator.shape.body>) {
+  static async changePassword(userId: Types.ObjectId, body: z.infer<typeof changePasswordValidator.shape.body>) {
     const { oldPassword, newPassword } = body;
 
     const foundUser = await UserModel.findOne({ _id: userId }).lean();
@@ -150,6 +155,19 @@ class AccessService {
     await UserModel.updateOne({ _id: userId }, { password: passwordHash });
 
     return {};
+  }
+
+  static async changeInformation(userId: Types.ObjectId, body: z.infer<typeof changeInformationValidator.shape.body>) {
+    const { firstName, lastName, phoneNumber, address } = body;
+
+    const user = await UserModel.findByIdAndUpdate(
+      userId,
+      { firstName, lastName, phoneNumber, address },
+      { new: true },
+    ).lean();
+    if (!user) throw new AuthFailureError('Authorization failed');
+
+    return getInfoData(user, ['firstName', 'lastName', 'phoneNumber', 'address']);
   }
 }
 

@@ -2,7 +2,12 @@ import * as express from 'express';
 import accessController from '@server/controllers/access.controller';
 import { asyncHandler } from '@server/middlewares';
 import validate from '@server/validators';
-import { changePasswordUpValidator, loginValidator, signUpValidator } from '@server/validators/access.validator';
+import {
+  changeInformationValidator,
+  changePasswordValidator,
+  loginValidator,
+  signUpValidator,
+} from '@server/validators/access.validator';
 import { authentication } from '@server/middlewares/auth.middleware';
 import appConfig from '@server/configs/app.config';
 import detechDevice from '@server/middlewares/device.middleware';
@@ -29,8 +34,14 @@ router.post('/auth/refresh-token', asyncHandler(accessController.refreshToken));
 
 router.put(
   '/auth/change-password',
-  asyncHandler(validate(changePasswordUpValidator)),
+  asyncHandler(validate(changePasswordValidator)),
   asyncHandler(accessController.changePassword),
+);
+
+router.put(
+  '/auth/change-information',
+  asyncHandler(validate(changeInformationValidator)),
+  asyncHandler(accessController.changeInformation),
 );
 
 router.post('/auth/logout', asyncHandler(accessController.logout));
