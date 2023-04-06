@@ -1,18 +1,26 @@
 import fetch from 'node-fetch';
-import appConfig from '../../configs/app.config';
+import appConfig from '@server/configs/app.config';
 import { z } from 'zod';
-import { loginValidator, signUpValidator } from '../../validators/access.validator';
-import { makeid } from '../../helpers';
+import { loginValidator, signUpValidator } from '@server/validators/access.validator';
+import { makeid } from '@server/helpers';
+import HEADERS from '@server/utils/headers';
+import KeyService from '@server/services/key.service';
+import { Types } from 'mongoose';
 
 const PORT = appConfig.app.port;
 const uri = `http://localhost:${PORT}/api/v1`;
 const randomId = makeid(10);
-let userId, accessToken;
+let userId = '',
+  accessToken = '',
+  refreshToken = '',
+  deviceId = '';
 const badResponse = (message: string) => ({
   status: 'error',
   statusCode: 400,
   message: message,
 });
+
+import('@server/dbs/init.mongodb');
 
 describe('signUpUser', () => {
   const bodySchema = signUpValidator.shape.body;
@@ -102,7 +110,6 @@ describe('signUpUser', () => {
       password: '123456',
       confirmPassword: '123456',
     });
-    console.log(result);
     expect(result.statusCode).toBe(201);
   });
 
@@ -148,13 +155,39 @@ describe('loginUser', () => {
     expect(result.statusCode).toBe(401);
   });
 
-  it('should return message when account or password incorrect', async () => {
+  it('should return message when account or password correct', async () => {
     const result = await request({
       account: randomId,
       password: '123456',
     });
     userId = result.metadata.user._id;
     accessToken = result.metadata.tokens.accessToken;
+    refreshToken = result.metadata.tokens.refreshToken;
+    deviceId = result.metadata.deviceId;
+    console.log(deviceId);
     expect(result.statusCode).toBe(200);
   });
 });
+
+// describe('logout', () => {
+//   const request = () =>
+//     fetch(`${uri}/auth/logout`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         [HEADERS.CLIENT_ID]: userId,
+//         [HEADERS.DEVICE_ID]: deviceId,
+//         [HEADERS.AUTHORIZATION]: `Bearer ${accessToken}`,
+//       },
+//     }).then((res) => res.json());
+//   it('should return message when logout success', async () => {
+//     const result = await request();
+//     expect(result.statusCode).toBe(200);
+//   });
+
+//   it("should return error when refreshToken don't remove", async () => {
+//     const result = await KeyService.findByDeviceIdAndRefreshToken(new Types.ObjectId(deviceId), refreshToken);
+//     console.log(result);
+//     expect(!!result).toBe(false);
+//   });
+// });

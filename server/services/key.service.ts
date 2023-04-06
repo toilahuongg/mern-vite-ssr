@@ -49,8 +49,8 @@ export default class KeyService {
     return KeyModel.findOne({ user }, { _id: 0, publicKey: 1, privateKey: 1 }).lean();
   }
 
-  static findByDeviceId(deviceId: Types.ObjectId) {
-    return KeyModel.findOne({ 'devices._id': deviceId }).lean();
+  static findByDeviceUserId(deviceId: Types.ObjectId, userId: Types.ObjectId) {
+    return KeyModel.findOne({ 'devices._id': deviceId, user: userId }).lean();
   }
 
   static addToRefreshTokensUsed(_id: Types.ObjectId, refreshToken: string) {

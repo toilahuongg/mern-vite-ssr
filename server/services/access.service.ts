@@ -119,7 +119,7 @@ class AccessService {
     }
 
     const foundKey = await KeyService.findByDeviceIdAndRefreshToken(deviceId, refreshToken);
-    if (!foundKey) throw new AuthFailureError('Invalid RefreshToken');
+    if (!foundKey) throw new AuthFailureError('Invalid RefreshToken or Device ID');
 
     let decoded: TUserEncrypt;
     try {

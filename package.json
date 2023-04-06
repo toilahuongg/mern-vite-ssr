@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "start": "NODE_ENV=producttion node dist/index.js",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {

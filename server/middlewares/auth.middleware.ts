@@ -1,4 +1,4 @@
-import { AuthFailureError, NotFoundError } from '@server/core/error.response';
+import { AuthFailureError } from '@server/core/error.response';
 import { asyncHandler } from '.';
 import KeyService from '@server/services/key.service';
 import { Types } from 'mongoose';
@@ -22,14 +22,18 @@ export const authentication = asyncHandler(async (req, res, next) => {
   const deviceId = req.headers[HEADERS.DEVICE_ID] as string;
   if (!deviceId) throw new AuthFailureError('Missing Device ID!');
 
-  const foundKey = await KeyService.findByDeviceId(new Types.ObjectId(deviceId));
-  if (!foundKey) throw new AuthFailureError('Invalid Device ID!');
+  const foundKey = await KeyService.findByDeviceUserId(new Types.ObjectId(deviceId), new Types.ObjectId(userId));
+  if (!foundKey) throw new AuthFailureError('Invalid Device ID or Client ID!');
 
   if (req.headers[HEADERS.REFRESH_TOKEN]) {
     try {
       const refreshToken = req.headers[HEADERS.REFRESH_TOKEN] as string;
+      const decoded = (await verifyToken(refreshToken, foundKey.publicKey)) as TUserEncrypt;
+      if (decoded.userId !== userId) throw new AuthFailureError('Invalid Client ID');
+      req.userId = new Types.ObjectId(userId);
       req.deviceId = new Types.ObjectId(deviceId);
       req.refreshToken = refreshToken;
+      return next();
     } catch (error) {
       throw error;
     }
@@ -46,12 +50,9 @@ export const authentication = asyncHandler(async (req, res, next) => {
     throw new AuthFailureError('Invalid AccessToken!');
   }
 
-  const keyStore = await KeyService.getKeyPair(new Types.ObjectId(userId));
-  if (!keyStore) throw new NotFoundError('Not found keyStore!');
-
   let decoded: TUserEncrypt;
   try {
-    decoded = (await verifyToken(accessToken, keyStore.publicKey)) as TUserEncrypt;
+    decoded = (await verifyToken(accessToken, foundKey.publicKey)) as TUserEncrypt;
   } catch (error) {
     console.log('Decoded token::', error);
     throw new AuthFailureError('Invalid AccessToken!');
@@ -60,20 +61,5 @@ export const authentication = asyncHandler(async (req, res, next) => {
   if (userId !== decoded.userId) throw new AuthFailureError('Invalid Client ID');
   req.userId = new Types.ObjectId(userId);
   req.deviceId = new Types.ObjectId(deviceId);
-  return next();
-});
-
-export const checkRefreshToken = asyncHandler(async (req, res, next) => {
-  const deviceId = req.headers[HEADERS.DEVICE_ID] as string;
-  if (!deviceId) throw new AuthFailureError('Missing Device ID!');
-
-  const foundKey = await KeyService.findByDeviceId(new Types.ObjectId(deviceId));
-  if (!foundKey) throw new AuthFailureError('Invalid Device ID!');
-
-  const refreshToken = req.headers[HEADERS.REFRESH_TOKEN] as string;
-  if (!refreshToken) throw new AuthFailureError('Missing RefreshToken!');
-
-  req.deviceId = new Types.ObjectId(deviceId);
-  req.refreshToken = refreshToken;
   return next();
 });
