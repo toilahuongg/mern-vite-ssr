@@ -2,7 +2,7 @@ import * as bcrypt from 'bcrypt';
 import UserModel from '@server/models/user.model';
 import ErrorResponse, { AuthFailureError, ConflictError } from '@server/core/error.response';
 import { generateKey } from '@server/helpers/generateKey';
-import { createTokenPair, generateToken, verifyToken } from '@server/utils/token';
+import { createTokenPair, generateToken, verifyToken } from '@server/helpers/token';
 import KeyService from './key.service';
 import { getInfoData } from '@server/helpers';
 import { z } from 'zod';

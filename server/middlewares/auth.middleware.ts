@@ -2,7 +2,7 @@ import { AuthFailureError } from '@server/core/error.response';
 import { asyncHandler } from '.';
 import KeyService from '@server/services/key.service';
 import { Types } from 'mongoose';
-import { verifyToken } from '@server/utils/token';
+import { verifyToken } from '@server/helpers/token';
 import { TUserEncrypt } from '@server/schema/user.schema';
 import HEADERS from '@server/utils/headers';
 
