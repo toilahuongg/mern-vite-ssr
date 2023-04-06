@@ -33,6 +33,13 @@ class AccessController {
       }),
     }).send(res);
   }
+
+  static async changePassword(req: Request, res: Response) {
+    new OK({
+      message: 'Change password success!',
+      metadata: await AccessService.changePassword(req.userId!, req.body),
+    }).send(res);
+  }
 }
 
 export default AccessController;

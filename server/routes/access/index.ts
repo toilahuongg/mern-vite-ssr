@@ -2,7 +2,7 @@ import * as express from 'express';
 import accessController from '@server/controllers/access.controller';
 import { asyncHandler } from '@server/middlewares';
 import validate from '@server/validators';
-import { loginValidator, signUpValidator } from '@server/validators/access.validator';
+import { changePasswordUpValidator, loginValidator, signUpValidator } from '@server/validators/access.validator';
 import { authentication } from '@server/middlewares/auth.middleware';
 import appConfig from '@server/configs/app.config';
 import detechDevice from '@server/middlewares/device.middleware';
@@ -26,6 +26,12 @@ if (!appConfig.app.isProd) {
 }
 
 router.post('/auth/refresh-token', asyncHandler(accessController.refreshToken));
+
+router.put(
+  '/auth/change-password',
+  asyncHandler(validate(changePasswordUpValidator)),
+  asyncHandler(accessController.changePassword),
+);
 
 router.post('/auth/logout', asyncHandler(accessController.logout));
 export default router;

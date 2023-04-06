@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import appConfig from '@server/configs/app.config';
 import { z } from 'zod';
-import { loginValidator, signUpValidator } from '@server/validators/access.validator';
+import { changePasswordUpValidator, loginValidator, signUpValidator } from '@server/validators/access.validator';
 import { makeid } from '@server/helpers';
 import mongoose, { Types } from 'mongoose';
 import HEADERS from '@server/utils/headers';
@@ -197,6 +197,28 @@ describe('refreshToken', () => {
     }).then((res) => res.json());
   it('should return message when refreshToken success', async () => {
     const result = await request();
+    expect(result.statusCode).toBe(200);
+  });
+});
+
+describe('change-password', () => {
+  const request = (body: Partial<z.infer<typeof changePasswordUpValidator.shape.body>>) =>
+    fetch(`${uri}/auth/change-password`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        [HEADERS.CLIENT_ID]: userId,
+        [HEADERS.DEVICE_ID]: deviceId,
+        [HEADERS.AUTHORIZATION]: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(body),
+    }).then((res) => res.json());
+  it('should return message when change password success', async () => {
+    const result = await request({
+      oldPassword: '123456',
+      newPassword: '1234567',
+      confirmPassword: '1234567',
+    });
     expect(result.statusCode).toBe(200);
   });
 });

@@ -29,3 +29,20 @@ export const loginValidator = z.object({
     password: z.string({ required_error: 'Password is required' }),
   }),
 });
+
+export const changePasswordUpValidator = z.object({
+  body: z
+    .object({
+      oldPassword: z.string({
+        required_error: 'Old password is required',
+        invalid_type_error: 'Old password must be a string',
+      }),
+      newPassword: z
+        .string({ required_error: 'New password is required' })
+        .min(6, { message: 'New password must be 6 or more characters long' }),
+      confirmPassword: z.string({ required_error: 'Confirm password is required' }),
+    })
+    .refine(({ newPassword, confirmPassword }) => newPassword === confirmPassword, {
+      message: "Passwords don't match",
+    }),
+});

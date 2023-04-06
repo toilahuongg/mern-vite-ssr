@@ -6,7 +6,7 @@ import { createTokenPair, generateToken, verifyToken } from '@server/utils/token
 import KeyService from './key.service';
 import { getInfoData } from '@server/helpers';
 import { z } from 'zod';
-import { loginValidator, signUpValidator } from '@server/validators/access.validator';
+import { changePasswordUpValidator, loginValidator, signUpValidator } from '@server/validators/access.validator';
 import { TDevice } from '@server/schema/key.schema';
 import { TRefreshTokenSchema, TUserEncrypt } from '@server/schema/user.schema';
 import { Types } from 'mongoose';
@@ -135,6 +135,21 @@ class AccessService {
     return {
       accessToken,
     };
+  }
+
+  static async changePassword(userId: Types.ObjectId, body: z.infer<typeof changePasswordUpValidator.shape.body>) {
+    const { oldPassword, newPassword } = body;
+
+    const foundUser = await UserModel.findOne({ _id: userId }).lean();
+    if (!foundUser) throw new AuthFailureError('Authorization failed');
+
+    const match = await bcrypt.compare(oldPassword, foundUser.password);
+    if (!match) throw new AuthFailureError('Incorrect old password!');
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await UserModel.updateOne({ _id: userId }, { password: passwordHash });
+
+    return {};
   }
 }
 
