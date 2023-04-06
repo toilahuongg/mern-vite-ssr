@@ -240,6 +240,7 @@ describe('change-information', () => {
       },
       body: JSON.stringify(body),
     }).then((res) => res.json());
+
   it('should return message when change information success', async () => {
     const result = await request({
       firstName: 'Vu Ba',
