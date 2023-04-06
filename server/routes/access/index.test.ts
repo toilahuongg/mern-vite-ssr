@@ -3,9 +3,13 @@ import appConfig from '@server/configs/app.config';
 import { z } from 'zod';
 import { loginValidator, signUpValidator } from '@server/validators/access.validator';
 import { makeid } from '@server/helpers';
+import mongoose, { Types } from 'mongoose';
 import HEADERS from '@server/utils/headers';
 import KeyService from '@server/services/key.service';
-import { Types } from 'mongoose';
+
+const {
+  db: { host, name, pass, port, user },
+} = appConfig;
 
 const PORT = appConfig.app.port;
 const uri = `http://localhost:${PORT}/api/v1`;
@@ -20,7 +24,19 @@ const badResponse = (message: string) => ({
   message: message,
 });
 
-import('@server/dbs/init.mongodb');
+const connectString = `mongodb://${host}:${port}/${name}?authSource=admin`;
+beforeEach(async () => {
+  await mongoose.connect(connectString, {
+    user,
+    pass,
+    maxPoolSize: 50,
+  });
+});
+
+/* Closing database connection after each test. */
+afterEach(async () => {
+  await mongoose.connection.close();
+});
 
 describe('signUpUser', () => {
   const bodySchema = signUpValidator.shape.body;
@@ -164,30 +180,45 @@ describe('loginUser', () => {
     accessToken = result.metadata.tokens.accessToken;
     refreshToken = result.metadata.tokens.refreshToken;
     deviceId = result.metadata.deviceId;
-    console.log(deviceId);
     expect(result.statusCode).toBe(200);
   });
 });
 
-// describe('logout', () => {
-//   const request = () =>
-//     fetch(`${uri}/auth/logout`, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         [HEADERS.CLIENT_ID]: userId,
-//         [HEADERS.DEVICE_ID]: deviceId,
-//         [HEADERS.AUTHORIZATION]: `Bearer ${accessToken}`,
-//       },
-//     }).then((res) => res.json());
-//   it('should return message when logout success', async () => {
-//     const result = await request();
-//     expect(result.statusCode).toBe(200);
-//   });
+describe('refreshToken', () => {
+  const request = () =>
+    fetch(`${uri}/auth/refresh-token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        [HEADERS.CLIENT_ID]: userId,
+        [HEADERS.DEVICE_ID]: deviceId,
+        [HEADERS.REFRESH_TOKEN]: refreshToken,
+      },
+    }).then((res) => res.json());
+  it('should return message when refreshToken success', async () => {
+    const result = await request();
+    expect(result.statusCode).toBe(200);
+  });
+});
 
-//   it("should return error when refreshToken don't remove", async () => {
-//     const result = await KeyService.findByDeviceIdAndRefreshToken(new Types.ObjectId(deviceId), refreshToken);
-//     console.log(result);
-//     expect(!!result).toBe(false);
-//   });
-// });
+describe('logout', () => {
+  const request = () =>
+    fetch(`${uri}/auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        [HEADERS.CLIENT_ID]: userId,
+        [HEADERS.DEVICE_ID]: deviceId,
+        [HEADERS.AUTHORIZATION]: `Bearer ${accessToken}`,
+      },
+    }).then((res) => res.json());
+  it('should return message when logout success', async () => {
+    const result = await request();
+    expect(result.statusCode).toBe(200);
+  });
+
+  it("should return error when refreshToken don't remove", async () => {
+    const result = await KeyService.findByDeviceIdAndRefreshToken(new Types.ObjectId(deviceId), refreshToken);
+    expect(!!result).toBe(false);
+  });
+});

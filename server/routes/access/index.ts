@@ -17,7 +17,6 @@ router.post(
 );
 
 router.post('/auth/login', detechDevice, asyncHandler(validate(loginValidator)), asyncHandler(accessController.login));
-router.post('/auth/refresh-token', asyncHandler(accessController.refreshToken));
 
 router.use(authentication);
 if (!appConfig.app.isProd) {
