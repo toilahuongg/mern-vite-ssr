@@ -1,9 +1,9 @@
 import * as express from 'express';
-import accessRouter from './access';
+import accountRouter from './account';
 import { TInputError } from '@server/schema/response.schema';
 import ErrorResponse from '@server/core/error.response';
 const router = express.Router();
-router.use(accessRouter);
+router.use(accountRouter);
 router.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
   const error = new ErrorResponse({ message: 'Not found', statusCode: 404 });
   next(error);

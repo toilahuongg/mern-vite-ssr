@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { CREATED, OK } from '@server/core/success.response';
-import AccessService from '@server/services/access.service';
+import AccessService from '@server/services/account.service';
 
 class AccessController {
   static async signUp(req: Request, res: Response) {
