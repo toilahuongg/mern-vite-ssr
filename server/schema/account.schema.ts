@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import { z } from 'zod';
 
-export const userSchema = z.object({
+export const accountSchema = z.object({
   _id: z.instanceof(Types.ObjectId).optional(),
   username: z.string(),
   password: z.string(),
@@ -12,8 +12,8 @@ export const userSchema = z.object({
   address: z.string().optional(),
 });
 
-export const userEncryptSchema = z.object({
-  userId: z.string(),
+export const accountEncryptSchema = z.object({
+  accountId: z.string(),
   username: z.string(),
 });
 
@@ -22,6 +22,6 @@ export const refreshTokenSchema = z.object({
   refreshToken: z.string(),
 });
 
-export type TUserEncrypt = z.infer<typeof userEncryptSchema>;
-export type TUser = z.infer<typeof userSchema>;
+export type TAccountEncrypt = z.infer<typeof accountEncryptSchema>;
+export type TAccount = z.infer<typeof accountSchema>;
 export type TRefreshTokenSchema = z.infer<typeof refreshTokenSchema>;

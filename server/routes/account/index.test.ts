@@ -19,7 +19,7 @@ const {
 const PORT = appConfig.app.port;
 const uri = `http://localhost:${PORT}/api/v1`;
 const randomId = makeid(10);
-let userId = '',
+let accountId = '',
   accessToken = '',
   refreshToken = '',
   deviceId = '';
@@ -181,7 +181,7 @@ describe('loginUser', () => {
       account: randomId,
       password: '123456',
     });
-    userId = result.metadata.user._id;
+    accountId = result.metadata.user._id;
     accessToken = result.metadata.tokens.accessToken;
     refreshToken = result.metadata.tokens.refreshToken;
     deviceId = result.metadata.deviceId;
@@ -195,7 +195,7 @@ describe('refreshToken', () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        [HEADERS.CLIENT_ID]: userId,
+        [HEADERS.CLIENT_ID]: accountId,
         [HEADERS.DEVICE_ID]: deviceId,
         [HEADERS.REFRESH_TOKEN]: refreshToken,
       },
@@ -212,7 +212,7 @@ describe('change-password', () => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        [HEADERS.CLIENT_ID]: userId,
+        [HEADERS.CLIENT_ID]: accountId,
         [HEADERS.DEVICE_ID]: deviceId,
         [HEADERS.AUTHORIZATION]: `Bearer ${accessToken}`,
       },
@@ -234,7 +234,7 @@ describe('change-information', () => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        [HEADERS.CLIENT_ID]: userId,
+        [HEADERS.CLIENT_ID]: accountId,
         [HEADERS.DEVICE_ID]: deviceId,
         [HEADERS.AUTHORIZATION]: `Bearer ${accessToken}`,
       },
@@ -256,7 +256,7 @@ describe('logout', () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        [HEADERS.CLIENT_ID]: userId,
+        [HEADERS.CLIENT_ID]: accountId,
         [HEADERS.DEVICE_ID]: deviceId,
         [HEADERS.AUTHORIZATION]: `Bearer ${accessToken}`,
       },

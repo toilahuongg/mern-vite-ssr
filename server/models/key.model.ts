@@ -25,7 +25,7 @@ const deviceSchema = new Schema<TDevice>({
 });
 const keySchema = new Schema<TKey>(
   {
-    user: {
+    account: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'User',

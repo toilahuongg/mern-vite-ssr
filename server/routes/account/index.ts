@@ -31,7 +31,7 @@ router.post(
 router.use(authentication);
 if (!appConfig.app.isProd) {
   router.get('/account/check-auth', (req, res) => {
-    return res.json(req.userId);
+    return res.json(req.accountId);
   });
 }
 

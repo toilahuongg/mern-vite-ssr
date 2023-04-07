@@ -1,9 +1,9 @@
-import { TUser } from '@server/schema/user.schema';
+import { TAccount } from '@server/schema/account.schema';
 import { Schema, model } from 'mongoose';
 
-const DOCUMENT_NAME = 'User';
-const COLLECTION_NAME = 'Users';
-const userSchema = new Schema<TUser>(
+const DOCUMENT_NAME = 'Account';
+const COLLECTION_NAME = 'Accounts';
+const accountSchema = new Schema<TAccount>(
   {
     username: {
       type: String,
@@ -22,6 +22,6 @@ const userSchema = new Schema<TUser>(
   },
   { timestamps: true, collection: COLLECTION_NAME },
 );
-const UserModel = model(DOCUMENT_NAME, userSchema);
+const AccountModel = model(DOCUMENT_NAME, accountSchema);
 
-export default UserModel;
+export default AccountModel;

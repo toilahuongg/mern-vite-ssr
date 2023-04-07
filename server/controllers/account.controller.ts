@@ -20,7 +20,7 @@ class AccessController {
   static async logout(req: Request, res: Response) {
     new OK({
       message: 'Logout success!',
-      metadata: await AccessService.logout(req.userId!, req.deviceId!),
+      metadata: await AccessService.logout(req.accountId!, req.deviceId!),
     }).send(res);
   }
 
@@ -37,14 +37,14 @@ class AccessController {
   static async changePassword(req: Request, res: Response) {
     new OK({
       message: 'Change password success!',
-      metadata: await AccessService.changePassword(req.userId!, req.body),
+      metadata: await AccessService.changePassword(req.accountId!, req.body),
     }).send(res);
   }
 
   static async changeInformation(req: Request, res: Response) {
     new OK({
       message: 'Change information success!',
-      metadata: await AccessService.changeInformation(req.userId!, req.body),
+      metadata: await AccessService.changeInformation(req.accountId!, req.body),
     }).send(res);
   }
 }

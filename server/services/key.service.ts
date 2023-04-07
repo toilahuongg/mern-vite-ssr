@@ -3,10 +3,10 @@ import { TDevice, TKey, TUpdateRefreshToken } from '@server/schema/key.schema';
 import { Types } from 'mongoose';
 
 export default class KeyService {
-  static async createKeyToken({ user, publicKey, privateKey, devices }: TKey): Promise<TDevice> {
+  static async createKeyToken({ account, publicKey, privateKey, devices }: TKey): Promise<TDevice> {
     try {
       const tokens = await KeyModel.create({
-        user,
+        account,
         publicKey,
         privateKey,
         devices,
@@ -18,11 +18,22 @@ export default class KeyService {
     }
   }
 
-  static async updateRefreshToken({ user, publicKey, privateKey, newDevice }: TUpdateRefreshToken): Promise<TDevice> {
+  static async updateRefreshToken({
+    account,
+    publicKey,
+    privateKey,
+    newDevice,
+  }: TUpdateRefreshToken): Promise<TDevice> {
     try {
-      const key = await KeyModel.findOne({ user }, { _id: 0, devices: 1, refreshTokensUsed: 1 }).lean();
+      const key = await KeyModel.findOne({ account }, { _id: 0, devices: 1, refreshTokensUsed: 1 }).lean();
       if (!key)
-        return await this.createKeyToken({ user, publicKey, privateKey, devices: [newDevice], refreshTokensUsed: [] });
+        return await this.createKeyToken({
+          account,
+          publicKey,
+          privateKey,
+          devices: [newDevice],
+          refreshTokensUsed: [],
+        });
 
       key.devices.push(newDevice);
 
@@ -33,7 +44,7 @@ export default class KeyService {
 
       const tokens = (await KeyModel.findOneAndUpdate(
         {
-          user,
+          account,
         },
         key,
         { new: true },
@@ -45,12 +56,12 @@ export default class KeyService {
     }
   }
 
-  static getKeyPair(user: Types.ObjectId): Promise<{ publicKey: string; privateKey: string } | null> {
-    return KeyModel.findOne({ user }, { _id: 0, publicKey: 1, privateKey: 1 }).lean();
+  static getKeyPair(account: Types.ObjectId): Promise<{ publicKey: string; privateKey: string } | null> {
+    return KeyModel.findOne({ account }, { _id: 0, publicKey: 1, privateKey: 1 }).lean();
   }
 
-  static findByDeviceUserId(deviceId: Types.ObjectId, userId: Types.ObjectId) {
-    return KeyModel.findOne({ 'devices._id': deviceId, user: userId }).lean();
+  static findByDeviceAccountId(deviceId: Types.ObjectId, accountId: Types.ObjectId) {
+    return KeyModel.findOne({ 'devices._id': deviceId, account: accountId }).lean();
   }
 
   static addToRefreshTokensUsed(_id: Types.ObjectId, refreshToken: string) {
@@ -72,10 +83,10 @@ export default class KeyService {
     return KeyModel.findOneAndUpdate({ _id }, { devices: [] }, { new: true }).lean();
   }
 
-  static async removeDevice(user: Types.ObjectId, id: Types.ObjectId): Promise<Types.ObjectId> {
+  static async removeDevice(account: Types.ObjectId, id: Types.ObjectId): Promise<Types.ObjectId> {
     await KeyModel.updateOne(
       {
-        user,
+        account,
       },
       {
         $pull: {

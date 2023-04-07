@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import UserModel from '@server/models/user.model';
+import AccountModel from '@server/models/account.model';
 import ErrorResponse, { AuthFailureError, ConflictError } from '@server/core/error.response';
 import { generateKey } from '@server/helpers/generateKey';
 import { createTokenPair, generateToken, verifyToken } from '@server/helpers/token';
@@ -13,7 +13,7 @@ import {
   signUpValidator,
 } from '@server/validators/access.validator';
 import { TDevice } from '@server/schema/key.schema';
-import { TRefreshTokenSchema, TUserEncrypt } from '@server/schema/user.schema';
+import { TRefreshTokenSchema, TAccountEncrypt } from '@server/schema/account.schema';
 import { Types } from 'mongoose';
 import { ForbiddenError } from '@server/core/error.response';
 import appConfig from '@server/configs/app.config';
@@ -21,7 +21,7 @@ import appConfig from '@server/configs/app.config';
 class AccessService {
   static async signUp(body: z.infer<typeof signUpValidator.shape.body>, device: TDevice) {
     const { username, email, password } = body;
-    const holderUser = await UserModel.findOne({
+    const holderUser = await AccountModel.findOne({
       $or: [
         {
           username,
@@ -35,7 +35,7 @@ class AccessService {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const newUser = await UserModel.create({
+    const newUser = await AccountModel.create({
       username,
       email,
       password: passwordHash,
@@ -44,13 +44,13 @@ class AccessService {
     const { publicKey, privateKey } = await generateKey();
 
     const tokens = await createTokenPair(
-      <TUserEncrypt>{ userId: newUser._id.toString(), username: newUser.username },
+      <TAccountEncrypt>{ accountId: newUser._id.toString(), username: newUser.username },
       privateKey,
     );
 
     device.refreshToken = tokens.refreshToken;
     const newDevice = await KeyService.createKeyToken({
-      user: newUser._id,
+      account: newUser._id,
       publicKey,
       privateKey,
       devices: [device],
@@ -75,7 +75,7 @@ class AccessService {
   static async login(body: z.infer<typeof loginValidator.shape.body>, device: TDevice) {
     const { account, password } = body;
 
-    const foundUser = await UserModel.findOne({
+    const foundUser = await AccountModel.findOne({
       $or: [
         {
           username: account,
@@ -94,13 +94,13 @@ class AccessService {
     const { publicKey, privateKey } = keyPair;
 
     const tokens = await createTokenPair(
-      <TUserEncrypt>{ userId: foundUser._id.toString(), username: foundUser.username },
+      <TAccountEncrypt>{ accountId: foundUser._id.toString(), username: foundUser.username },
       privateKey,
     );
     device.refreshToken = tokens.refreshToken;
 
     const newDevice = await KeyService.updateRefreshToken({
-      user: foundUser._id,
+      account: foundUser._id,
       publicKey,
       privateKey,
       newDevice: device,
@@ -113,8 +113,8 @@ class AccessService {
     };
   }
 
-  static async logout(userId: Types.ObjectId, deviceId: Types.ObjectId) {
-    return KeyService.removeDevice(userId, deviceId);
+  static async logout(accountId: Types.ObjectId, deviceId: Types.ObjectId) {
+    return KeyService.removeDevice(accountId, deviceId);
   }
   static async refreshToken({ refreshToken, deviceId }: TRefreshTokenSchema) {
     const foundRefreshTokensUsed = await KeyService.findInRefreshTokensUsed(refreshToken);
@@ -126,42 +126,45 @@ class AccessService {
     const foundKey = await KeyService.findByDeviceIdAndRefreshToken(deviceId, refreshToken);
     if (!foundKey) throw new AuthFailureError('Invalid RefreshToken or Device ID');
 
-    let decoded: TUserEncrypt;
+    let decoded: TAccountEncrypt;
     try {
-      decoded = (await verifyToken(refreshToken, foundKey.publicKey)) as TUserEncrypt;
+      decoded = (await verifyToken(refreshToken, foundKey.publicKey)) as TAccountEncrypt;
     } catch (error) {
       console.log('Decoded refreshToken::', error);
       await KeyService.addToRefreshTokensUsed(foundKey._id, refreshToken);
       throw new AuthFailureError('Invalid RefreshToken!');
     }
 
-    const { userId, username } = decoded;
-    const accessToken = generateToken({ userId, username }, foundKey.privateKey, appConfig.app.tokenExpiresIn);
+    const { accountId, username } = decoded;
+    const accessToken = generateToken({ accountId, username }, foundKey.privateKey, appConfig.app.tokenExpiresIn);
     return {
       accessToken,
     };
   }
 
-  static async changePassword(userId: Types.ObjectId, body: z.infer<typeof changePasswordValidator.shape.body>) {
+  static async changePassword(accountId: Types.ObjectId, body: z.infer<typeof changePasswordValidator.shape.body>) {
     const { oldPassword, newPassword } = body;
 
-    const foundUser = await UserModel.findOne({ _id: userId }).lean();
+    const foundUser = await AccountModel.findOne({ _id: accountId }).lean();
     if (!foundUser) throw new AuthFailureError('Authorization failed');
 
     const match = await bcrypt.compare(oldPassword, foundUser.password);
     if (!match) throw new AuthFailureError('Incorrect old password!');
 
     const passwordHash = await bcrypt.hash(newPassword, 10);
-    await UserModel.updateOne({ _id: userId }, { password: passwordHash });
+    await AccountModel.updateOne({ _id: accountId }, { password: passwordHash });
 
     return {};
   }
 
-  static async changeInformation(userId: Types.ObjectId, body: z.infer<typeof changeInformationValidator.shape.body>) {
+  static async changeInformation(
+    accountId: Types.ObjectId,
+    body: z.infer<typeof changeInformationValidator.shape.body>,
+  ) {
     const { firstName, lastName, phoneNumber, address } = body;
 
-    const user = await UserModel.findByIdAndUpdate(
-      userId,
+    const user = await AccountModel.findByIdAndUpdate(
+      accountId,
       { firstName, lastName, phoneNumber, address },
       { new: true },
     ).lean();

@@ -4,7 +4,7 @@ import { TDevice } from './schema/key.schema';
 declare global {
   namespace Express {
     interface Request {
-      userId?: Types.ObjectId | undefined;
+      accountId?: Types.ObjectId | undefined;
       device?: TDevice | undefined;
       deviceId?: Types.ObjectId | undefined;
       refreshToken?: string | undefined;
