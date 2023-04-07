@@ -3,9 +3,9 @@ import * as useragent from 'express-useragent';
 import * as requestIP from 'request-ip';
 import { TDevice } from '@server/schema/key.schema';
 
-const detechDevice = express.Router();
-detechDevice.use(useragent.express());
-detechDevice.use((req, res, next) => {
+const detectDevice = express.Router();
+detectDevice.use(useragent.express());
+detectDevice.use((req, res, next) => {
   const { browser, os } = req.useragent!;
   const ipAddress = requestIP.getClientIp(req)!;
 
@@ -19,4 +19,4 @@ detechDevice.use((req, res, next) => {
   next();
 });
 
-export default detechDevice;
+export default detectDevice;

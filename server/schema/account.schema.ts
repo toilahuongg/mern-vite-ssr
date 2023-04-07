@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import { z } from 'zod';
 
 export const accountSchema = z.object({
-  _id: z.instanceof(Types.ObjectId).optional(),
+  _id: z.instanceof(Types.ObjectId),
   username: z.string(),
   password: z.string(),
   firstName: z.string().optional(),
@@ -10,6 +10,7 @@ export const accountSchema = z.object({
   email: z.string().email(),
   phoneNumber: z.string().optional(),
   address: z.string().optional(),
+  roles: z.array(z.instanceof(Types.ObjectId)),
 });
 
 export const accountEncryptSchema = z.object({

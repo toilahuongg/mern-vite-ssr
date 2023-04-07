@@ -3,7 +3,7 @@ import { TDevice, TKey, TUpdateRefreshToken } from '@server/schema/key.schema';
 import { Types } from 'mongoose';
 
 export default class KeyService {
-  static async createKeyToken({ account, publicKey, privateKey, devices }: TKey): Promise<TDevice> {
+  static async createKeyToken({ account, publicKey, privateKey, devices }: Omit<TKey, '_id'>): Promise<TDevice> {
     try {
       const tokens = await KeyModel.create({
         account,

@@ -11,6 +11,7 @@
     "build:server": "tsc --project tsconfig.server.json",
     "preview": "vite preview",
     "predeploy": "npm run build",
+    "install:app": "ts-node -r tsconfig-paths/register --project ./tsconfig.server.json ./server/utils/install.ts",
     "start": "NODE_ENV=producttion node dist/index.js",
     "test": "jest --detectOpenHandles",
     "deploy": "gh-pages -d dist"

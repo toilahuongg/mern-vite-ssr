@@ -17,8 +17,10 @@ import { TRefreshTokenSchema, TAccountEncrypt } from '@server/schema/account.sch
 import { Types } from 'mongoose';
 import { ForbiddenError } from '@server/core/error.response';
 import appConfig from '@server/configs/app.config';
+import { NotFoundError } from '@server/core/error.response';
+import { TRole } from '@server/schema/role.schema';
 
-class AccessService {
+class AccountService {
   static async signUp(body: z.infer<typeof signUpValidator.shape.body>, device: TDevice) {
     const { username, email, password } = body;
     const holderUser = await AccountModel.findOne({
@@ -168,10 +170,17 @@ class AccessService {
       { firstName, lastName, phoneNumber, address },
       { new: true },
     ).lean();
-    if (!user) throw new AuthFailureError('Authorization failed');
+    if (!user) throw new NotFoundError('Account not found!');
 
     return getInfoData(user, ['firstName', 'lastName', 'phoneNumber', 'address']);
   }
+
+  static async getRolesById(accountId: Types.ObjectId) {
+    const user = await AccountModel.findById(accountId, { roles: 1 }).populate<{ roles: [TRole] }>('roles').lean();
+    if (!user) throw new NotFoundError('Account not found!');
+
+    return user.roles;
+  }
 }
 
-export default AccessService;
+export default AccountService;

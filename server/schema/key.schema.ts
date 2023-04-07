@@ -10,7 +10,7 @@ export const deviceSchema = z.object({
 });
 
 export const keySchema = z.object({
-  _id: z.instanceof(Types.ObjectId).optional(),
+  _id: z.instanceof(Types.ObjectId),
   account: z.instanceof(Types.ObjectId),
   publicKey: z.string(),
   privateKey: z.string(),

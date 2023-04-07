@@ -1,5 +1,5 @@
 import { AuthFailureError } from '@server/core/error.response';
-import { asyncHandler } from '.';
+import { detectException } from '.';
 import KeyService from '@server/services/key.service';
 import { Types } from 'mongoose';
 import { verifyToken } from '@server/helpers/token';
@@ -15,7 +15,7 @@ import HEADERS from '@server/utils/headers';
   - Check keyStore with this accountId
   - OK => next()
 */
-export const authentication = asyncHandler(async (req, res, next) => {
+export const authentication = detectException(async (req, res, next) => {
   const accountId = req.headers[HEADERS.CLIENT_ID] as string;
   if (!accountId) throw new AuthFailureError('Missing Client ID!');
 

@@ -8,6 +8,7 @@ declare global {
       device?: TDevice | undefined;
       deviceId?: Types.ObjectId | undefined;
       refreshToken?: string | undefined;
+      scopes?: string[] | undefined;
     }
   }
 }

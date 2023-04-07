@@ -1,5 +1,6 @@
 import { TDevice, TKey } from '@server/schema/key.schema';
 import { Schema, model } from 'mongoose';
+import AccountModel from './account.model';
 
 const DOCUMENT_NAME = 'Key';
 const COLLECTION_NAME = 'Keys';
@@ -28,7 +29,7 @@ const keySchema = new Schema<TKey>(
     account: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: 'User',
+      ref: AccountModel.modelName,
     },
     publicKey: {
       type: String,

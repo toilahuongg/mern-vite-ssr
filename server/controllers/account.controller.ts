@@ -1,33 +1,33 @@
 import { Request, Response } from 'express';
 import { CREATED, OK } from '@server/core/success.response';
-import AccessService from '@server/services/account.service';
+import AccountService from '@server/services/account.service';
 
 class AccessController {
   static async signUp(req: Request, res: Response) {
     new CREATED({
       message: 'Registered OK!',
-      metadata: await AccessService.signUp(req.body, req.device!),
+      metadata: await AccountService.signUp(req.body, req.device!),
     }).send(res);
   }
 
   static async login(req: Request, res: Response) {
     new OK({
       message: 'Login success!',
-      metadata: await AccessService.login(req.body, req.device!),
+      metadata: await AccountService.login(req.body, req.device!),
     }).send(res);
   }
 
   static async logout(req: Request, res: Response) {
     new OK({
       message: 'Logout success!',
-      metadata: await AccessService.logout(req.accountId!, req.deviceId!),
+      metadata: await AccountService.logout(req.accountId!, req.deviceId!),
     }).send(res);
   }
 
   static async refreshToken(req: Request, res: Response) {
     new OK({
       message: 'Get accessToken success!',
-      metadata: await AccessService.refreshToken({
+      metadata: await AccountService.refreshToken({
         refreshToken: req.refreshToken!,
         deviceId: req.deviceId!,
       }),
@@ -37,14 +37,14 @@ class AccessController {
   static async changePassword(req: Request, res: Response) {
     new OK({
       message: 'Change password success!',
-      metadata: await AccessService.changePassword(req.accountId!, req.body),
+      metadata: await AccountService.changePassword(req.accountId!, req.body),
     }).send(res);
   }
 
   static async changeInformation(req: Request, res: Response) {
     new OK({
       message: 'Change information success!',
-      metadata: await AccessService.changeInformation(req.accountId!, req.body),
+      metadata: await AccountService.changeInformation(req.accountId!, req.body),
     }).send(res);
   }
 }
