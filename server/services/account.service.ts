@@ -11,7 +11,7 @@ import {
   changePasswordValidator,
   loginValidator,
   signUpValidator,
-} from '@server/validators/access.validator';
+} from '@server/validators/account.validator';
 import { TDevice } from '@server/schema/key.schema';
 import { TRefreshTokenSchema, TAccountEncrypt } from '@server/schema/account.schema';
 import { Types } from 'mongoose';

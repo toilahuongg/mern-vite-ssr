@@ -6,7 +6,7 @@ import {
   changePasswordValidator,
   loginValidator,
   signUpValidator,
-} from '@server/validators/access.validator';
+} from '@server/validators/account.validator';
 import { makeid } from '@server/helpers';
 import mongoose, { Types } from 'mongoose';
 import HEADERS from '@server/utils/headers';
@@ -46,7 +46,7 @@ afterEach(async () => {
 describe('signUpUser', () => {
   const bodySchema = signUpValidator.shape.body;
   const request = (body: Partial<z.infer<typeof bodySchema>>) =>
-    fetch(`${uri}/account/signup`, {
+    fetch(`${uri}/accounts/signup`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
@@ -148,7 +148,7 @@ describe('signUpUser', () => {
 describe('loginUser', () => {
   const bodySchema = loginValidator.shape.body;
   const request = (body: Partial<z.infer<typeof bodySchema>>) =>
-    fetch(`${uri}/account/login`, {
+    fetch(`${uri}/accounts/login`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
@@ -191,7 +191,7 @@ describe('loginUser', () => {
 
 describe('refreshToken', () => {
   const request = () =>
-    fetch(`${uri}/account/refresh-token`, {
+    fetch(`${uri}/accounts/refresh-token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -208,7 +208,7 @@ describe('refreshToken', () => {
 
 describe('change-password', () => {
   const request = (body: Partial<z.infer<typeof changePasswordValidator.shape.body>>) =>
-    fetch(`${uri}/account/change-password`, {
+    fetch(`${uri}/accounts/change-password`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -230,7 +230,7 @@ describe('change-password', () => {
 
 describe('change-information', () => {
   const request = (body: Partial<z.infer<typeof changeInformationValidator.shape.body>>) =>
-    fetch(`${uri}/account/change-information`, {
+    fetch(`${uri}/accounts/change-information`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -252,7 +252,7 @@ describe('change-information', () => {
 
 describe('logout', () => {
   const request = () =>
-    fetch(`${uri}/account/logout`, {
+    fetch(`${uri}/accounts/logout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

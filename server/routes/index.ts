@@ -1,12 +1,12 @@
 import * as express from 'express';
-import accountRouter from './account';
-import adminRouter from './admin';
+import accountsRouter from './accounts';
+import rolesRouter from './roles';
 import { TInputError } from '@server/schema/response.schema';
 import ErrorResponse from '@server/core/error.response';
 const router = express.Router();
 
-router.use(accountRouter);
-router.use(adminRouter);
+router.use(accountsRouter);
+router.use(rolesRouter);
 
 router.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
   const error = new ErrorResponse({ message: 'Not found', statusCode: 404 });
