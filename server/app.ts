@@ -1,9 +1,9 @@
-import * as express from 'express';
-import * as fsp from 'fs/promises';
-import * as path from 'path';
-import * as compression from 'compression';
+import express from 'express';
+import fsp from 'fs/promises';
+import path from 'path';
+import compression from 'compression';
 import helmet from 'helmet';
-import * as morgan from 'morgan';
+import morgan from 'morgan';
 import { ViteDevServer, createServer as createViteServer } from 'vite';
 import { installGlobals } from '@remix-run/node';
 

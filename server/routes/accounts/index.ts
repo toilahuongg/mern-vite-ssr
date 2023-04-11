@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import accessController from '@server/controllers/account.controller';
 import { detectException } from '@server/middlewares';
 import validate from '@server/validators';

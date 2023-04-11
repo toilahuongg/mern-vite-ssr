@@ -1,6 +1,6 @@
 import appConfig from '@server/configs/app.config';
-import * as crypto from 'crypto';
-import * as dotenv from 'dotenv';
+import crypto from 'crypto';
+import dotenv from 'dotenv';
 
 dotenv.config();
 

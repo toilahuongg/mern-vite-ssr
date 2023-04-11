@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import AccountModel from '@server/models/account.model';
 import ErrorResponse, { AuthFailureError, ConflictError } from '@server/core/error.response';
 import { generateKey } from '@server/helpers/generateKey';

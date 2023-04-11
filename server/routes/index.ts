@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import accountsRouter from './accounts';
 import rolesRouter from './roles';
 import { TInputError } from '@server/schema/response.schema';

@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import { authentication } from '@server/middlewares/auth.middleware';
 import { accessScopes, detechRoles } from '@server/middlewares/role.middleware';
 import { SCOPES } from '@server/utils/permissions';

@@ -1,9 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, matchRoutes, RouterProvider } from 'react-router-dom';
 
 import { routes } from './App';
 
+import '@src/styles/app.scss';
 hydrate();
 
 async function hydrate() {

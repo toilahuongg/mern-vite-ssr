@@ -1,5 +1,5 @@
-import * as JWT from 'jsonwebtoken';
-import * as dotenv from 'dotenv';
+import JWT from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import appConfig from '@server/configs/app.config';
 
 dotenv.config();

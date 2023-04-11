@@ -1,6 +1,6 @@
-import * as express from 'express';
-import * as useragent from 'express-useragent';
-import * as requestIP from 'request-ip';
+import express from 'express';
+import useragent from 'express-useragent';
+import requestIP from 'request-ip';
 import { TDevice } from '@server/schema/key.schema';
 
 const detectDevice = express.Router();
