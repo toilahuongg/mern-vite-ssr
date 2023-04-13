@@ -1,0 +1,85 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@config "../tailwind.config.js";
+
+@import url('https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/fira_code.min.css');
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+@layer components {
+  .btn-primary {
+    @apply py-2 px-4 cursor-pointer border-primary border border-solid text-white hover:bg-primary/20 hover:font-medium;
+  }
+  .btn-secondary {
+    @apply py-2 px-4 cursor-pointer border-gray border border-solid text-gray hover:bg-gray/20 hover:font-medium;
+  }
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+  .nav-item {
+    @apply text-gray cursor-pointer hover:text-white data-[active=true]:text-white data-[active=true]:font-medium;
+  }
+  .border-solid-gray {
+    @apply border border-solid border-gray;
+  }
+  .border-t-solid-gray {
+    @apply border-t border-solid border-gray;
+  }
+  .border-y-solid-gray {
+    @apply border-y border-solid border-gray;
+  }
+  .textfield {
+    user-select: none;
+    @apply relative;
+  }
+  .textfield-label {
+    @apply text-gray bg-background leading-none px-1 absolute top-2 left-2 transition-all;
+    @apply data-[active=true]:top-0 data-[active=true]:left-3 data-[active=true]:-translate-y-1/2 data-[active=true]:text-white;
+    @apply focus:top-0 focus:left-3 focus:text-white;
+  }
+  .textfield:hover .textfield-label {
+    @apply top-0 -translate-y-1/2 left-3 text-white;
+  }
+  .textfield-input {
+    @apply p-2 bg-transparent text-gray border-solid-gray w-full outline-none block;
+  }
+}
+@layer base {
+  :root {
+    --color-primary: 199 120 221;
+    --color-gray: 171 178 191;
+    --color-background: 40 44 51;
+    --color-white: 255 255 255;
+    font-family: 'Fira Code';
+  }
+}
+
+.header {
+  z-index: 888;
+  &-social {
+    left: 17px;
+    top: 0;
+    z-index: 999;
+    &__line {
+      width: 1px;
+      height: 191px;
+    }
+    &__icon {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}
+body {
+  background: rgb(var(--color-background));
+}
+#root {
+  height: 100vh;
+  overflow-y: auto;
+}

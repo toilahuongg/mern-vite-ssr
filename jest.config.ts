@@ -8,7 +8,8 @@ const jestConfig: JestConfigWithTsJest = {
   },
   transformIgnorePatterns: ['<rootDir>/node_modules/'],
   moduleNameMapper: {
-    '^@src/(.*)$': '<rootDir>/src/$1',
+    '^@client/(.*)$': '<rootDir>/client/$1',
+    '^@dashboard/(.*)$': '<rootDir>/dashboard/$1',
     '^@server/(.*)$': '<rootDir>/server/$1',
   },
 };
