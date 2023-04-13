@@ -1,10 +1,10 @@
-import { RouteObject } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
 import HomePage from './routes/Home';
 import Root from './routes/Root';
 import './styles/app.scss';
 
-export const routes: RouteObject[] = [
+const router = createBrowserRouter([
   {
     path: '',
     element: <Root />,
@@ -20,4 +20,6 @@ export const routes: RouteObject[] = [
       },
     ],
   },
-];
+]);
+
+export default router;
