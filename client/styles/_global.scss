@@ -1,0 +1,42 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/fira_code.min.css');
+
+:root {
+  --color-primary: 199 120 221;
+  --color-gray: 171 178 191;
+  --color-background: 40 44 51;
+  --color-white: 255 255 255;
+  font-family: 'Fira Code';
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: rgb(var(--color-background));
+}
+
+#root {
+  height: 100vh;
+  overflow-y: auto;
+}
+
+
+.header {
+  z-index: 888;
+  &-social {
+    left: 1rem;
+    top: 0;
+    z-index: 999;
+    &__line {
+      width: 1px;
+      height: 12rem;
+    }
+    &__icon {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+}

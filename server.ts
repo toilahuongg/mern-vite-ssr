@@ -14,7 +14,6 @@ installGlobals();
 
 const root = process.cwd();
 const isProduction = process.env.NODE_ENV === 'production';
-
 function resolve(p: string) {
   return path.resolve(__dirname, p);
 }
@@ -37,7 +36,7 @@ const createServer = async () => {
     app.use(morgan('tiny'));
     app.use(helmet());
     app.use(compression());
-    app.use(express.static(resolve('dist/client')));
+    app.use(express.static(resolve('src')));
   }
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -52,11 +51,11 @@ const createServer = async () => {
     const url = req.originalUrl;
 
     // Use a separate HTML file for the "Inbox" app.
-    const appDirectory = url.startsWith('/admin') ? 'dashboard' : '';
+    const appDirectory = url.startsWith('/admin') ? 'dashboard' : 'client';
     let htmlFileToLoad;
 
     if (isProduction) {
-      htmlFileToLoad = path.join('dist', appDirectory, 'index.html');
+      htmlFileToLoad = path.join('src', appDirectory, 'index.html');
     } else {
       htmlFileToLoad = path.join(appDirectory, 'index.html');
     }
