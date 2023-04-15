@@ -1,12 +1,13 @@
-import { Link } from 'react-router-dom';
-import ListSocial from '../Socials';
+import Link from 'next/link';
 import Navigation from './Navigation';
+import ListSocial from '../Socials';
+
 const Header = () => {
   return (
     <section className="sticky top-0 w-full p-3 backdrop-blur-sm header">
       <div className="container mx-auto flex justify-between">
         <h2 className="text-white text-2xl font-bold">
-          <Link to="/">Hugon.</Link>
+          <Link href="/">Hugon.</Link>
         </h2>
         <Navigation />
       </div>

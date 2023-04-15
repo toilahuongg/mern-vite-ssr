@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./**/*.{js,jsx,ts,tsx}'],
+  content: ['client/components/**/*.{js,jsx,ts,tsx}', 'src/pages/index.tsx'],
   theme: {
     extend: {
       aspectRatio: {

@@ -1,4 +1,4 @@
-import { NAVIGATE_MENU } from 'client/constants/common';
+import { NAVIGATE_MENU } from '@client/constants/common';
 import NavItem from './Item';
 
 const Navigation = () => {

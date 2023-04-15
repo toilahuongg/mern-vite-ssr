@@ -1,12 +1,14 @@
-import Button from 'client/components/Layout/Button';
-import Container from 'client/components/Layout/Container';
-import Heading from 'client/components/Layout/Heading';
-import TextField from 'client/components/Layout/TextField';
-import ListProject from 'client/components/Project/List';
-import Skills from 'client/components/Skills';
-import { Link } from 'react-router-dom';
+import Image from 'next/image'
+import Button from '@client/components/Layout/Button';
+import Heading from '@client/components/Layout/Heading';
+import TextField from '@client/components/Layout/TextField';
+import ListProject from '@client/components/Project/List';
+import Skills from '@client/components/Skills';
+import Link from 'next/link';
+import Container from '@client/components/Layout/Container';
 
-const HomePage = () => {
+
+export default function Home() {
   return (
     <>
       <Container>
@@ -21,7 +23,7 @@ const HomePage = () => {
           </div>
           <div className="col-span-5 flex justify-end">
             <div className="px-2">
-              <img className="mx-auto" src="/assets/images/Image-1.png" />
+              <Image className="mx-auto" src="/assets/images/Image-1.png" alt="" width={512} height={512} />
             </div>
           </div>
         </div>
@@ -33,7 +35,7 @@ const HomePage = () => {
           </div>
           <div className="col-span-3">
             <div className="flex justify-end text-white hover:text-primary font-medium">
-              <Link to="/projects">{'View all ~~>'} </Link>
+              <Link href="/projects">{'View all ~~>'} </Link>
             </div>
           </div>
         </div>
@@ -93,7 +95,7 @@ const HomePage = () => {
             </div>
           </div>
           <div className="col-span-5 flex justify-center">
-            <img src="/assets/images/Image.png" />
+            <Image src="/assets/images/Image.png" alt="" width={300} height={300} />
           </div>
         </div>
       </Container>
@@ -116,6 +118,4 @@ const HomePage = () => {
       </Container>
     </>
   );
-};
-
-export default HomePage;
+}

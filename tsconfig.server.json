@@ -1,10 +1,10 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "nodenext",
     "target": "ESNext",
     "outDir": "dist",
     "noEmit": false,
   },
-  "include": ["server", "./server.ts"]
+  "include": ["server"]
 }

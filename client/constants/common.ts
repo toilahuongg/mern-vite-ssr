@@ -1,5 +1,5 @@
-import { GithubIcon, InstagramIcon, LinkedInIcon } from 'client/svgs';
-import { TMenuItem, TSocialItem } from 'client/types/common';
+import { GithubIcon, InstagramIcon, LinkedInIcon } from '@client/svgs';
+import { TMenuItem, TSocialItem } from '@client/types/common';
 
 export const NAVIGATE_MENU: TMenuItem[] = [
   {
